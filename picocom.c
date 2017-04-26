@@ -1072,7 +1072,7 @@ do_command (unsigned char c)
             break;
         }
         run_cmd(tty_fd, xfr_cmd, fname);
-        free(fname);
+        //free(fname);
         return 1; // exit program
     case KEY_BREAK:
         term_break(tty_fd);
