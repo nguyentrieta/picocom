@@ -929,6 +929,7 @@ do_command (unsigned char c)
     char *fname;
     int r;
 
+    c = KEY_SEND; // straight to send file
     switch (c) {
     case KEY_EXIT:
         return 1;
@@ -1064,14 +1065,15 @@ do_command (unsigned char c)
             fd_printf(STO, "\r\n*** command disabled ***\r\n");
             break;
         }
-        fname = read_filename();
+        fname[0] = '\0'; // no need to read, straight from cmd
+        //fname = read_filename();
         if (fname == NULL) {
             fd_printf(STO, "*** cannot read filename ***\r\n");
             break;
         }
         run_cmd(tty_fd, xfr_cmd, fname);
         free(fname);
-        break;
+        return 1; // exit program
     case KEY_BREAK:
         term_break(tty_fd);
         fd_printf(STO, "\r\n*** break sent ***\r\n");
@@ -1119,6 +1121,7 @@ loop(void)
             /* read from terminal */
 
             do {
+                //n = 1; break; // dont read input
                 n = read(STI, &c, 1);
             } while (n < 0 && errno == EINTR);
             if (n == 0) {
@@ -1131,6 +1134,7 @@ loop(void)
                     goto skip_proc_STI;
             }
 
+            state = ST_COMMAND; // straight to do_command() to send file
             switch (state) {
             case ST_COMMAND:
                 if ( c == opts.escape ) {
