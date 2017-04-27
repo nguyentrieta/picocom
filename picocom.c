@@ -1065,13 +1065,14 @@ do_command (unsigned char c)
             fd_printf(STO, "\r\n*** command disabled ***\r\n");
             break;
         }
-        fname[0] = '\0'; // no need to read, straight from cmd
-        //fname = read_filename();
+        char *f = "\0"; // no need to read, straight from cmd
+        /*
+        fname = read_filename();
         if (fname == NULL) {
             fd_printf(STO, "*** cannot read filename ***\r\n");
             break;
-        }
-        run_cmd(tty_fd, xfr_cmd, fname);
+        }*/
+        run_cmd(tty_fd, xfr_cmd, f);
         //free(fname);
         return 1; // exit program
     case KEY_BREAK:
@@ -1115,14 +1116,16 @@ loop(void)
             else
                 fatal("select failed: %d : %s", errno, strerror(errno));
         }
-
+        fd_printf(STO, "Triet3\r\n");
         if ( FD_ISSET(STI, &rdset) ) {
 
             /* read from terminal */
 
             do {
-                //n = 1; break; // dont read input
-                n = read(STI, &c, 1);
+                fd_printf(STO, "Triet1\r\n");
+                n = 1; c=' ';break; // dont read input
+                fd_printf(STO, "Triet2\r\n");
+                //n = read(STI, &c, 1);
             } while (n < 0 && errno == EINTR);
             if (n == 0) {
                 fatal("stdin closed");
@@ -1663,7 +1666,9 @@ main(int argc, char *argv[])
               KEYC(opts.escape), KEYC(KEY_HELP));
 #endif
     fd_printf(STO, "Terminal ready\r\n");
-    loop();
+    //do_command(KEY_RECEIVE);
+    run_cmd(tty_fd, opts.send_cmd, "\0");
+    //loop();
 
 #ifdef LINENOISE
     cleanup_history();
