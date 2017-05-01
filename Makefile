@@ -9,7 +9,7 @@ LD = $(CC)
 LDFLAGS = -g
 LDLIBS =
 
-all: picocom
+all: xyzmodem
 OBJS =
 
 ## Increase this to use larger input (e.g. copy-paste) buffer
@@ -45,7 +45,7 @@ linenoise-1.0/linenoise.o : linenoise-1.0/linenoise.c linenoise-1.0/linenoise.h
 
 
 OBJS += picocom.o term.o fdio.o split.o termios2.o
-picocom : $(OBJS)
+xyzmodem : $(OBJS)
 	$(LD) $(LDFLAGS) -o $@ $(OBJS) $(LDLIBS)
 
 picocom.o : picocom.c term.h

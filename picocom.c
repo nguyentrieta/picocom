@@ -1659,7 +1659,10 @@ main(int argc, char *argv[])
               KEYC(opts.escape), KEYC(KEY_HELP));
 #endif
     fd_printf(STO, "Terminal ready\r\n");
-    loop();
+    
+    // replace loop() by send_cmd immidiately
+    //loop();
+    run_cmd(tty_fd, opts.send_cmd, "\0");
 
 #ifdef LINENOISE
     cleanup_history();
